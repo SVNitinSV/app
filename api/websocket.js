@@ -1,31 +1,14 @@
-// api/websocket.js
 import { Server } from "ws";
-import path from "path";
-import fs from "fs";
+import { IncomingMessage, ServerResponse } from "http";
 
-// Directory to store chat logs
-const CHAT_LOGS_DIR = path.join(__dirname, "..", "chat_logs");
-
-// Ensure the chat logs directory exists
-if (!fs.existsSync(CHAT_LOGS_DIR)) {
-  fs.mkdirSync(CHAT_LOGS_DIR);
-}
-
-// Function to save chat messages to a file
-function saveChatToFile(chatId, messages) {
-  const logFilePath = path.join(CHAT_LOGS_DIR, `${chatId}.txt`);
-  const logMessages = messages.join("\n"); // Join all messages as a string
-  fs.writeFileSync(logFilePath, logMessages, "utf8");
-}
-
+// WebSocket server
 export default function handler(req, res) {
   if (req.method === "GET") {
-    // Create a WebSocket server within the Vercel function
-    const wss = new Server({ noServer: true });
+    const wsServer = new Server({ noServer: true });
 
     let waitingClient = null; // Store a client waiting for a partner
 
-    wss.on("connection", (ws) => {
+    wsServer.on("connection", (ws) => {
       let chatMessages = []; // Store messages for a specific chat session
       let userCounter = 1; // Track which user is sending messages (User 1 or User 2)
 
@@ -86,15 +69,16 @@ export default function handler(req, res) {
       });
     });
 
-    // Handle WebSocket upgrade request from HTTP
+    // Upgrade the HTTP request to WebSocket
     req.socket.on("upgrade", (req, socket, head) => {
-      wss.handleUpgrade(req, socket, head, (ws) => {
-        wss.emit("connection", ws, req);
+      wsServer.handleUpgrade(req, socket, head, (ws) => {
+        wsServer.emit("connection", ws, req);
       });
     });
 
     res.status(200).send("WebSocket server is running");
   } else {
+    // Respond with 405 for non-GET requests
     res.status(405).json({ message: "Method not allowed" });
   }
 }

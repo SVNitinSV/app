@@ -1,12 +1,10 @@
-// script.js
-
 const messagesDiv = document.getElementById("messages");
 const messageInput = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
 const stopButton = document.getElementById("stopButton");
 
 // Connect to WebSocket via the Vercel serverless function
-const ws = new WebSocket(`ws://${window.location.hostname}/api/websocket`);
+const ws = new WebSocket(`wss://${window.location.hostname}/api/websocket`);
 
 ws.onmessage = (event) => {
   let messageData = event.data;

@@ -25,12 +25,7 @@ body {
   border-bottom: 1px solid #ccc;
   padding: 10px;
   margin-bottom: 10px;
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.8
-  ); /* Slight transparency for messages */
+  background-color: rgba(255, 255, 255, 0.8);
   border-radius: 5px;
 }
 
@@ -51,7 +46,7 @@ body {
 }
 
 #sendButton {
-  background-color: #a83236; /* Brick red color */
+  background-color: #a83236;
   color: white;
   border: none;
   cursor: pointer;
@@ -63,7 +58,7 @@ body {
 
 #stopButton {
   background-color: #f0f0f0;
-  color: #a83236; /* Brick red */
+  color: #a83236;
   border: 1px solid #a83236;
   cursor: pointer;
 }
