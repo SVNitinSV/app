@@ -1,33 +1,21 @@
+// script.js
+
 const messagesDiv = document.getElementById("messages");
 const messageInput = document.getElementById("messageInput");
 const sendButton = document.getElementById("sendButton");
-const stopButton = document.getElementById("stopButton"); // Stop button element
+const stopButton = document.getElementById("stopButton");
 
-const ws = new WebSocket(`ws://${window.location.host}`);
+// Connect to WebSocket via the Vercel serverless function
+const ws = new WebSocket(`ws://${window.location.hostname}/api/websocket`);
 
 ws.onmessage = (event) => {
   let messageData = event.data;
 
-  // If the message is a Blob, we need to read it as text
-  if (messageData instanceof Blob) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      try {
-        const parsedMessage = JSON.parse(reader.result);
-        addMessageToChat(parsedMessage.message);
-      } catch (e) {
-        console.error("Failed to parse WebSocket message:", reader.result);
-      }
-    };
-    reader.readAsText(messageData);
-  } else {
-    // If the message is not a Blob, assume it's a text message
-    try {
-      const parsedMessage = JSON.parse(messageData);
-      addMessageToChat(parsedMessage.message);
-    } catch (e) {
-      console.error("Failed to parse WebSocket message:", messageData);
-    }
+  try {
+    const parsedMessage = JSON.parse(messageData);
+    addMessageToChat(parsedMessage.message);
+  } catch (e) {
+    console.error("Failed to parse WebSocket message:", messageData);
   }
 };
 
